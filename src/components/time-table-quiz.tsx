@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
+import Fireworks from "./fireworks.tsx";
 
 type Feedback = 'correct' | 'incorrect' | 'tryAgain' | 'noAttempt';
 
@@ -71,7 +72,12 @@ const TimesTableQuiz: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+        <div className="bg-gray-600">
+
+
+        <div className="min-h-screen flex flex-col items-center justify-center  p-4">
+            {correctCount === 10 &&  <Fireworks />}
+
             <div className="bg-white shadow-lg rounded-lg p-6 max-w-sm text-center">
                 <h2 className="text-2xl text-red-500 font-bold mb-4">Zoe's Times Table Quiz</h2>
 
@@ -125,7 +131,7 @@ const TimesTableQuiz: React.FC = () => {
             </div>
 
             {/* Tally of correct and incorrect answers */}
-            <div className="mt-6 text-center">
+            <div className="mt-6 text-center text-white">
                 <p className="text-xl font-semibold">
                     Correct: <span className="text-green-500">{correctCount}</span>
                 </p>
@@ -133,6 +139,8 @@ const TimesTableQuiz: React.FC = () => {
                     Wrong: <span className="text-red-500">{wrongCount}</span>
                 </p>
             </div>
+
+        </div>
         </div>
     );
 };
