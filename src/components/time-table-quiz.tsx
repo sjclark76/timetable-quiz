@@ -62,7 +62,7 @@ const TimesTableQuiz: React.FC = () => {
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
             <div className="bg-white shadow-lg rounded-lg p-6 max-w-sm text-center">
-                <h2 className="text-2xl text-red-500 font-bold mb-4">Times Table Quiz</h2>
+                <h2 className="text-2xl text-red-500 font-bold mb-4">Zoe's Times Table Quiz</h2>
 
                 {/* Display the multiplication question */}
                 <p className="text-lg mb-4">
