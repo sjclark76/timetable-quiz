@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
+
+type Feedback = 'correct' | 'incorrect' | 'tryAgain' | 'noAttempt';
 
 const TimesTableQuiz: React.FC = () => {
+
+    const inputRef = useRef<HTMLInputElement | null>(null);
+
     // State for current question and answer
     const [num1, setNum1] = useState<number>(0);
     const [num2, setNum2] = useState<number>(0);
     const [userAnswer, setUserAnswer] = useState<string>('');
     const [attempts, setAttempts] = useState<number>(0);
-    const [feedback, setFeedback] = useState<string>('');
+    const [feedback, setFeedback] = useState<Feedback>('noAttempt');
     const [showAnswer, setShowAnswer] = useState<boolean>(false);
 
     // Tally of correct and incorrect answers
@@ -26,7 +31,7 @@ const TimesTableQuiz: React.FC = () => {
         setNum2(newNum2);
         setUserAnswer('');
         setAttempts(0);
-        setFeedback('');
+        setFeedback('noAttempt');
         setShowAnswer(false);
     };
 
@@ -44,12 +49,18 @@ const TimesTableQuiz: React.FC = () => {
             }, 1000); // 1-second delay to show correct feedback before moving on
         } else {
             setAttempts((prev) => prev + 1);
+            setUserAnswer('')
+
             if (attempts >= 1) {
-                setFeedback('wrong');
+                setFeedback('incorrect');
                 setWrongCount((prev) => prev + 1);
                 setShowAnswer(true);
             } else {
-                setFeedback('try again');
+                setFeedback('tryAgain');
+            }
+
+            if(inputRef.current){
+                inputRef.current.focus();
             }
         }
     };
@@ -72,6 +83,7 @@ const TimesTableQuiz: React.FC = () => {
                 {/* Form for submitting answer */}
                 <form onSubmit={handleSubmit} className="mb-4">
                     <input
+                        ref={inputRef}
                         type="number"
                         className="border p-4 rounded-lg w-full text-center mb-2"
                         placeholder="Type your answer"
@@ -92,10 +104,10 @@ const TimesTableQuiz: React.FC = () => {
                 {feedback === 'correct' && (
                     <p className="text-green-500 font-bold text-lg">Correct! 🎉</p>
                 )}
-                {feedback === 'try again' && (
+                {feedback === 'tryAgain' && (
                     <p className="text-yellow-500 font-bold text-lg">Try Again!</p>
                 )}
-                {feedback === 'wrong' && showAnswer && (
+                {feedback === 'incorrect' && showAnswer && (
                     <p className="text-red-500 font-bold text-lg">
                         Wrong! The correct answer is {num1 * num2}.
                     </p>
