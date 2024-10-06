@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Fireworks from "./fireworks.tsx";
 
 type Feedback = 'correct' | 'incorrect' | 'tryAgain' | 'noAttempt';
+type Mode = 'multiplication' | 'division';
 
 const TimesTableQuiz: React.FC = () => {
 
@@ -23,17 +24,27 @@ const TimesTableQuiz: React.FC = () => {
     const [currentStreak, setCurrentStreak] = useState<number>(0);
     const [highestStreak, setHighestStreak] = useState<number>(0);
 
+    // State for game mode
+    const [mode, setMode] = useState<Mode>('multiplication');
+
     // Generate a new question when the component loads or the question is reset
     useEffect(() => {
         generateQuestion();
-    }, []);
+    }, [mode]);
 
-    // Function to generate a new random multiplication question
+    // Function to generate a new random question based on the mode
     const generateQuestion = () => {
         const newNum1 = Math.floor(Math.random() * 11) + 2; // Random number from 2 to 12
         const newNum2 = Math.floor(Math.random() * 11) + 2; // Random number from 2 to 12
-        setNum1(newNum1);
-        setNum2(newNum2);
+
+        if (mode === 'multiplication') {
+            setNum1(newNum1);
+            setNum2(newNum2);
+        } else {
+            setNum1(newNum1 * newNum2); // Ensure num1 is a multiple of num2
+            setNum2(newNum2);
+        }
+
         setUserAnswer('');
         setAttempts(0);
         setFeedback('noAttempt');
@@ -43,7 +54,7 @@ const TimesTableQuiz: React.FC = () => {
     // Function to handle answer submission
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const correctAnswer = num1 * num2;
+        const correctAnswer = mode === 'multiplication' ? num1 * num2 : num1 / num2;
 
         if (parseInt(userAnswer) === correctAnswer) {
             setFeedback('correct');
@@ -83,6 +94,11 @@ const TimesTableQuiz: React.FC = () => {
         generateQuestion();
     };
 
+    // Function to toggle the game mode
+    const toggleMode = () => {
+        setMode((prevMode) => (prevMode === 'multiplication' ? 'division' : 'multiplication'));
+    };
+
     return (
         <div className="bg-gray-600">
             <div className="min-h-screen flex flex-col items-center justify-center p-4">
@@ -90,9 +106,17 @@ const TimesTableQuiz: React.FC = () => {
                 <div className="bg-white shadow-lg rounded-lg p-6 max-w-sm text-center">
                     <h2 className="text-2xl text-red-500 font-bold mb-4">Zoe's Times Table Quiz</h2>
 
-                    {/* Display the multiplication question */}
+                    {/* Toggle button for game mode */}
+                    <button
+                        onClick={toggleMode}
+                        className="mb-4 bg-purple-500 text-white py-2 rounded-lg w-full hover:bg-purple-600 transition duration-200"
+                    >
+                        Switch to {mode === 'multiplication' ? 'Division' : 'Multiplication'} Mode
+                    </button>
+
+                    {/* Display the question based on the mode */}
                     <p className="text-lg mb-4">
-                        What is {num1} x {num2}?
+                        {mode === 'multiplication' ? `What is ${num1} x ${num2}?` : `What is ${num1} / ${num2}?`}
                     </p>
 
                     {/* Form for submitting answer */}
@@ -124,7 +148,7 @@ const TimesTableQuiz: React.FC = () => {
                     )}
                     {feedback === 'incorrect' && showAnswer && (
                         <p className="text-red-500 font-bold text-lg">
-                            Wrong! The correct answer is {num1 * num2}.
+                            Wrong! The correct answer is {mode === 'multiplication' ? num1 * num2 : num1 / num2}.
                         </p>
                     )}
 
