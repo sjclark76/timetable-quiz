@@ -77,7 +77,6 @@ const TimesTableQuiz: React.FC = () => {
 
         <div className="min-h-screen flex flex-col items-center justify-center  p-4">
             {correctCount === 10 &&  <Fireworks />}
-
             <div className="bg-white shadow-lg rounded-lg p-6 max-w-sm text-center">
                 <h2 className="text-2xl text-red-500 font-bold mb-4">Zoe's Times Table Quiz</h2>
 
